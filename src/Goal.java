@@ -8,13 +8,13 @@ public class Goal {
     boolean isCompleted;
     private LocalDate endDate;
 
-    public Goal(String name, double target, Category category, LocalDate endDate) {
+    public Goal(String name, Category category, double target, double balance, LocalDate endDate) {
         this.name = name;
         this.target = target;
         this.category = category;
         this.endDate = endDate;
-        this.balance = 0;
-        this.isCompleted = false;
+        this.balance = balance;
+        this.isCompleted = target >= balance;
         category.addGoal(this);
     }
 
