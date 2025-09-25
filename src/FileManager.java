@@ -2,11 +2,13 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class FileManager {
     private static final String CATEGORIES_FILE = "categories.txt";
     private static final String GOALS_FILE = "goals.txt";
+    private static final String DEPOSITS_FILE = "deposits.txt";
 
     // Сохранение категорий в файл
     public void saveCategories(List<Category> categories) {
@@ -78,6 +80,46 @@ public class FileManager {
         return goals;
     }
 
+    public void saveDeposits(List<Goal> goals) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(DEPOSITS_FILE))) {
+            for (Goal goal : goals) {
+                for (Deposit deposit : goal.getDeposits()) {
+                    writer.write(goal.getName() + "|" +
+                            goal.getCategory().getName() + "|" +
+                            deposit.getAmount() + "|" +
+                            deposit.getDate().toString());
+                    writer.newLine();
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Ошибка сохранения депозитов: " + e.getMessage());
+        }
+    }
+
+    public void loadDeposits(List<Goal> goals) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(DEPOSITS_FILE))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("\\|");
+                if (parts.length == 4) {
+                    String goalName = parts[0];
+                    String categoryName = parts[1];
+                    double amount = Double.parseDouble(parts[2]);
+                    LocalDate date = LocalDate.parse(parts[3]);
+
+                    Optional<Goal> goal = goals.stream()
+                            .filter(g -> g.getName().equals(goalName)
+                                    && g.getCategory().getName().equals(categoryName))
+                            .findFirst();
+
+                    goal.ifPresent(g -> g.addDeposit(amount, date));
+                }
+            }
+        } catch (IOException e) {
+            System.err.println("Ошибка загрузки депозитов: " + e.getMessage());
+        }
+    }
+
     // Метод для инициализации приложения данными из файлов
     public void init(PiggyBank piggyBank) {
         List<Category> categories = loadCategories();
@@ -86,6 +128,8 @@ public class FileManager {
         List<Goal> goals = loadGoals(categories);
         categories.forEach(category -> category.getGoals().clear());
         goals.forEach(goal -> goal.getCategory().addGoal(goal));
+
+        loadDeposits(goals);
     }
 
     // Метод для сохранения всех данных
@@ -96,5 +140,7 @@ public class FileManager {
                 .collect(Collectors.toList());
         saveCategories(categories);
         saveGoals(allGoals);
+
+        saveDeposits(allGoals);
     }
 }

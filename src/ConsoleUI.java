@@ -30,6 +30,7 @@ public class ConsoleUI {
             System.out.println("6. Добавить новую категорию");
             System.out.println("7. Удалить категорию");
             System.out.println("8. Показать напоминания");
+            System.out.println("9. Прогноз завершения целей");
             System.out.println("0. Сохранить и выйти");
 
             piggyBank.checkAllGoalsProgress();
@@ -62,12 +63,25 @@ public class ConsoleUI {
                 case 8:
                     showReminders();
                     break;
+                case 9:
+                    showPrediction();
+                    break;
                 case 0:
                     running = false;
                     break;
                 default:
                     System.out.println("Неверный выбор!");
             }
+        }
+    }
+
+    private void showPrediction() {
+        List<Goal> allGoals = getAllGoals();
+
+        for (Goal goal : allGoals) {
+            System.out.println("\nЦель: " + goal.getName());
+            System.out.println("Текущий прогресс: " + goal.getBalance() + " из " + goal.getTarget());
+            System.out.println(goal.getPredictionInfo());
         }
     }
 
@@ -211,7 +225,7 @@ public class ConsoleUI {
                 }
             }
 
-            selectedGoal.setBalance(newBalance);
+            selectedGoal.setBalance(amount, LocalDate.now());
             System.out.println("Баланс успешно обновлен!");
 
             piggyBank.checkAllGoalsProgress();
