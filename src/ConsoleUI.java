@@ -10,6 +10,8 @@ public class ConsoleUI {
     public ConsoleUI() {
         this.piggyBank = new PiggyBank();
         this.scanner = new Scanner(System.in);
+
+        piggyBank.loadData();
     }
 
     public void start() {
@@ -118,6 +120,8 @@ public class ConsoleUI {
     }
 
     public void close() {
+        piggyBank.saveData();
+
         if (scanner != null) {
             scanner.close();
         }

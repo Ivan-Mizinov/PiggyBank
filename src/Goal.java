@@ -14,8 +14,20 @@ public class Goal {
         this.category = category;
         this.endDate = endDate;
         this.balance = balance;
-        this.isCompleted = target >= balance;
+        this.isCompleted = balance >= target;
         category.addGoal(this);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
     public double getTarget() {

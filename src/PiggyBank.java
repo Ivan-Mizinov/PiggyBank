@@ -3,6 +3,15 @@ import java.util.List;
 
 public class PiggyBank {
     private List<Category> categories = new ArrayList<>();
+    private FileManager fileManager = new FileManager();
+
+    public void loadData() {
+        fileManager.init(this);
+    }
+
+    public void saveData() {
+        fileManager.saveAll(this);
+    }
 
     public void addCategory(Category category) {
         categories.add(category);
@@ -13,7 +22,7 @@ public class PiggyBank {
     }
 
     public void displayAllGoals() {
-        System.out.println("Все цели в копилке:");
+        System.out.println("\nВсе цели в копилке:");
 
         for (Category category : categories) {
             System.out.println("\nКатегория: " + category.getName());

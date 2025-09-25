@@ -11,6 +11,10 @@ public class Category {
         this.description = description;
     }
 
+    public String getDescription() {
+        return description;
+    }
+
     public List<Goal> getGoals() {
         return goals;
     }
