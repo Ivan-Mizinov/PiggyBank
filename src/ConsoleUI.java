@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -18,6 +19,8 @@ public class ConsoleUI {
     public void start() {
         boolean running = true;
         while (running) {
+            checkAndShowReminders();
+
             System.out.println("\nМеню Копилки:");
             System.out.println("1. Создать новую цель");
             System.out.println("2. Удалить цель");
@@ -26,6 +29,7 @@ public class ConsoleUI {
             System.out.println("5. Обновить баланс цели");
             System.out.println("6. Добавить новую категорию");
             System.out.println("7. Удалить категорию");
+            System.out.println("8. Показать напоминания");
             System.out.println("0. Сохранить и выйти");
 
             piggyBank.checkAllGoalsProgress();
@@ -55,12 +59,35 @@ public class ConsoleUI {
                 case 7:
                     removeCategory();
                     break;
+                case 8:
+                    showReminders();
+                    break;
                 case 0:
                     running = false;
                     break;
                 default:
                     System.out.println("Неверный выбор!");
             }
+        }
+    }
+
+    private void showReminders() {
+        List<Goal> allGoals = getAllGoals();
+        boolean anyReminder = false;
+
+        for (Goal goal : allGoals) {
+            LocalDate today = LocalDate.now();
+            if (goal.getEndDate().isAfter(today)) {
+                long daysLeft = ChronoUnit.DAYS.between(today, goal.getEndDate());
+                System.out.println(
+                        "Цель: " + goal.getName() +
+                                ", До завершения: " + daysLeft + " дней"
+                );
+                anyReminder = true;
+            }
+        }
+        if (!anyReminder) {
+            System.out.println("Активных напоминаний нет");
         }
     }
 
@@ -289,6 +316,27 @@ public class ConsoleUI {
 
         if (scanner != null) {
             scanner.close();
+        }
+    }
+
+    private void checkAndShowReminders() {
+        List<Goal> allGoals = getAllGoals();
+        boolean anyReminderShown = false;
+
+        for (Goal goal : allGoals) {
+            if (goal.needsReminder()) {
+                LocalDate today = LocalDate.now();
+                long daysLeft = ChronoUnit.DAYS.between(today, goal.getEndDate());
+                System.out.println(
+                        "⚠️⚠️⚠️ Напоминание: до завершения цели '" +
+                                goal.getName() + "' осталось " + daysLeft + " дней! ⚠️⚠️⚠️"
+                );
+                anyReminderShown = true;
+            }
+        }
+
+        if (!anyReminderShown) {
+            System.out.println("Напоминаний нет");
         }
     }
 }

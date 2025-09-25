@@ -68,4 +68,11 @@ public class Goal {
                 "\nСтатус: " + (isCompleted ? "Выполнена" : "Не выполнена") +
                 "\nДата завершения: " + endDate;
     }
+
+    public boolean needsReminder() {
+        boolean reminderEnabled = true;
+        if (!reminderEnabled) return false;
+        LocalDate today = LocalDate.now();
+        return today.isAfter(endDate.minusDays(10)) && today.isBefore(endDate);
+    }
 }
