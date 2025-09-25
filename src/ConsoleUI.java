@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
@@ -21,6 +22,7 @@ public class ConsoleUI {
             System.out.println("1. Создать новую цель");
             System.out.println("2. Просмотреть все цели");
             System.out.println("3. Показать общий прогресс");
+            System.out.println("4. Обновить баланс цели");
             System.out.println("0. Сохранить и выйти");
 
             int choice = getIntInput("Выберите пункт меню: ");
@@ -35,6 +37,9 @@ public class ConsoleUI {
                 case 3:
                     System.out.println(piggyBank.getFormattedOverallProgress());
                     break;
+                case 4:
+                    updateGoalBalance();
+                    break;
                 case 0:
                     running = false;
                     break;
@@ -42,6 +47,58 @@ public class ConsoleUI {
                     System.out.println("Неверный выбор!");
             }
         }
+    }
+
+    private void updateGoalBalance() {
+        if (piggyBank.getAllCategories().isEmpty()) {
+            System.out.println("Нет доступных целей для обновления!");
+            return;
+        }
+
+        System.out.println("\nВыберите цель для обновления баланса:");
+        List<Goal> allGoals = getAllGoals();
+
+        for (int i = 0; i < allGoals.size(); i++) {
+            System.out.println((i + 1) + ". " + allGoals.get(i).getName() +
+                    " (Текущий баланс: " + allGoals.get(i).getBalance() + "), (Нужная сумма: " + allGoals.get(i).getTarget() +")");
+        }
+
+        int choice = getIntInput("Выберите цель: ");
+
+        if (choice > 0 && choice <= allGoals.size()) {
+            Goal selectedGoal = allGoals.get(choice - 1);
+            double amount = getDoubleInput("Введите сумму изменения баланса (положительную или отрицательную): ");
+            double newBalance = selectedGoal.getBalance() + amount;
+
+            if (newBalance > selectedGoal.getTarget()) {
+                System.out.println("Предупреждение! Новый баланс превышает целевую сумму!");
+                System.out.println("Текущая цель: " + selectedGoal.getTarget());
+                System.out.println("Предполагаемый баланс: " + newBalance);
+
+                if (!confirmAction()) {
+                    return;
+                }
+            }
+
+            selectedGoal.setBalance(newBalance);
+            System.out.println("Баланс успешно обновлен!");
+        } else {
+            System.out.println("Неверный выбор!");
+        }
+    }
+
+    private List<Goal> getAllGoals() {
+        List<Goal> allGoals = new ArrayList<>();
+        for (Category category : piggyBank.getAllCategories()) {
+            allGoals.addAll(category.getGoals());
+        }
+        return allGoals;
+    }
+
+    private boolean confirmAction() {
+        System.out.println("Хотите продолжить? (y/n): ");
+        String input = scanner.nextLine().trim().toLowerCase();
+        return input.equals("y");
     }
 
     private Category selectOrCreateCategory() {

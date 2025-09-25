@@ -18,6 +18,10 @@ public class Goal {
         category.addGoal(this);
     }
 
+    public void setBalance(double balance) {
+        this.balance = balance;
+    }
+
     public String getName() {
         return name;
     }
@@ -36,18 +40,6 @@ public class Goal {
 
     public double getBalance() {
         return balance;
-    }
-
-    public void updateBalance(double amount) {
-        double newBalance = balance + amount;
-
-        if (newBalance < 0) {
-            System.out.println("Ошибка: баланс не может быть отрицательным!");
-            return;
-        }
-
-        balance = newBalance;
-        checkCompletion();
     }
 
     private void checkCompletion() {
