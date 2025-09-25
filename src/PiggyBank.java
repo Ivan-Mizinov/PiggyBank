@@ -40,10 +40,32 @@ public class PiggyBank {
 
     public void addCategory(Category category) {
         categories.add(category);
+        System.out.println("Категория '" + category.getName() + "' успешно добавлена!");
     }
 
-    public void removeCategory(Category category) {
-        categories.remove(category);
+    public void removeCategory(String categoryName) {
+        Category categoryToRemove = null;
+        for (Category category : categories) {
+            if (category.getName().equalsIgnoreCase(categoryName)) {
+                categoryToRemove = category;
+                break;
+            }
+        }
+        if (categoryToRemove != null) {
+            categories.remove(categoryToRemove);
+            System.out.println("Категория '" + categoryName + "' успешно удалена!");
+        } else {
+            System.out.println("Категория не найдена!");
+        }
+    }
+
+    public boolean categoryExists(String categoryName) {
+        for (Category category : categories) {
+            if (category.getName().equalsIgnoreCase(categoryName)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void displayAllGoals() {

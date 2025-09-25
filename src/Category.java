@@ -32,11 +32,14 @@ public class Category {
         goals.add(goal);
     }
 
+    public void removeGoal(Goal goal) {
+        goals.remove(goal);
+    }
+
     @Override
     public String toString() {
         return "Категория: " + name +
                 "\nОписание: " + description +
                 "\nКоличество целей: " + goals.size();
     }
-
 }

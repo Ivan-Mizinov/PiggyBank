@@ -20,9 +20,12 @@ public class ConsoleUI {
         while (running) {
             System.out.println("\nМеню Копилки:");
             System.out.println("1. Создать новую цель");
-            System.out.println("2. Просмотреть все цели");
-            System.out.println("3. Показать общий прогресс");
-            System.out.println("4. Обновить баланс цели");
+            System.out.println("2. Удалить цель");
+            System.out.println("3. Просмотреть все цели");
+            System.out.println("4. Показать общий прогресс");
+            System.out.println("5. Обновить баланс цели");
+            System.out.println("6. Добавить новую категорию");
+            System.out.println("7. Удалить категорию");
             System.out.println("0. Сохранить и выйти");
 
             piggyBank.checkAllGoalsProgress();
@@ -35,13 +38,22 @@ public class ConsoleUI {
                     createGoal();
                     break;
                 case 2:
-                    piggyBank.displayAllGoals();
+                    removeGoal();
                     break;
                 case 3:
-                    System.out.println(piggyBank.getFormattedOverallProgress());
+                    piggyBank.displayAllGoals();
                     break;
                 case 4:
+                    System.out.println(piggyBank.getFormattedOverallProgress());
+                    break;
+                case 5:
                     updateGoalBalance();
+                    break;
+                case 6:
+                    addCategory();
+                    break;
+                case 7:
+                    removeCategory();
                     break;
                 case 0:
                     running = false;
@@ -50,6 +62,88 @@ public class ConsoleUI {
                     System.out.println("Неверный выбор!");
             }
         }
+    }
+
+    private void removeGoal() {
+        List<Goal> allGoals = getAllGoals();
+
+        if (allGoals.isEmpty()) {
+            System.out.println("Нет целей для удаления!");
+            return;
+        }
+
+        System.out.println("\nДоступные цели для удаления:");
+        for (int i = 0; i < allGoals.size(); i++) {
+            System.out.println((i + 1) + ". " + allGoals.get(i).getName());
+        }
+
+        int choice = getIntInput("Выберите цель для удаления: ");
+
+        if (choice > 0 && choice <= allGoals.size()) {
+            Goal selectedGoal = allGoals.get(choice - 1);
+            Category category = selectedGoal.getCategory();
+
+            try {
+                removeGoalFromCategory(category, selectedGoal);
+                System.out.println("Цель '" + selectedGoal.getName() + "' успешно удалена!");
+            } catch (Exception e) {
+                System.out.println("Ошибка при удалении цели!");
+            }
+        } else {
+            System.out.println("Неверный выбор!");
+        }
+    }
+
+    private void removeGoalFromCategory(Category category, Goal goal) {
+        if (category != null) {
+            category.removeGoal(goal);
+        } else {
+            throw new RuntimeException("Категория не найдена");
+        }
+    }
+
+    private void addCategory() {
+        String name = getStringInput("Введите название новой категории: ");
+        if (piggyBank.categoryExists(name)) {
+            System.out.println("Категория с таким именем уже существует!");
+            return;
+        }
+        String description = getStringInput("Введите описание для новой категории: ");
+        Category newCategory = new Category(name, description);
+        piggyBank.addCategory(newCategory);
+    }
+
+    private void removeCategory() {
+        List<Category> emptyCategories = getEmptyCategories();
+
+        if (emptyCategories.isEmpty()) {
+            System.out.println("Нет категорий для удаления (все категории содержат цели)");
+            return;
+        }
+
+        System.out.println("\nДоступные категории для удаления (пустые):");
+        for (int i = 0; i < emptyCategories.size(); i++) {
+            System.out.println((i + 1) + ". " + emptyCategories.get(i).getName());
+        }
+
+        int choice = getIntInput("Выберите категорию для удаления: ");
+
+        if (choice > 0 && choice <= emptyCategories.size()) {
+            String categoryName = emptyCategories.get(choice - 1).getName();
+            piggyBank.removeCategory(categoryName);
+        } else {
+            System.out.println("Неверный выбор!");
+        }
+    }
+
+    private List<Category> getEmptyCategories() {
+        List<Category> emptyCategories = new ArrayList<>();
+        for (Category category : piggyBank.getAllCategories()) {
+            if (category.getGoals().isEmpty()) {
+                emptyCategories.add(category);
+            }
+        }
+        return emptyCategories;
     }
 
     private void updateGoalBalance() {

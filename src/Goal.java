@@ -2,9 +2,9 @@ import java.time.LocalDate;
 
 public class Goal {
     private String name;
+    private Category category;
     private double balance;
     private double target;
-    private Category category;
     boolean isCompleted;
     private LocalDate endDate;
     private boolean notificationSent = false;
@@ -30,11 +30,11 @@ public class Goal {
             System.out.println("\n🎉🎉🎉 Поздравляем! Цель '" + name + "' достигла 80% прогресса! 🎉🎉🎉\n");
             notificationSent = true;
         }
+        if (progress < 80) {
+            notificationSent = false;
+        }
     }
 
-    public void resetNotification() {
-        notificationSent = false;
-    }
     public String getName() {
         return name;
     }
@@ -55,24 +55,16 @@ public class Goal {
         return balance;
     }
 
-    private void checkCompletion() {
-        if (balance >= target) {
-            isCompleted = true;
-            System.out.println("Баланс превысил целевую сумму. Цель достигнута!");
-        }
-    }
-
     public double getProgressPercentage() {
         return (balance / target) * 100;
     }
 
     @Override
     public String toString() {
-        return "Цель: " + name +
+        return "\nЦель: " + name +
                 "\nЦелевая сумма: " + target +
                 "\nТекущий баланс: " + balance +
                 "\nПрогресс: " + String.format("%.2f%%", getProgressPercentage()) +
-                "\nКатегория: " + category.getName() +
                 "\nСтатус: " + (isCompleted ? "Выполнена" : "Не выполнена") +
                 "\nДата завершения: " + endDate;
     }
