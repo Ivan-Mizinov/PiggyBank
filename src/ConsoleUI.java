@@ -167,6 +167,13 @@ public class ConsoleUI {
             double amount = getDoubleInput("Введите сумму изменения баланса (положительную или отрицательную): ");
             double newBalance = selectedGoal.getBalance() + amount;
 
+            if (newBalance < 0) {
+                System.out.println("Ошибка! Нельзя установить отрицательный баланс!");
+                System.out.println("Текущий баланс: " + selectedGoal.getBalance());
+                System.out.println("Предлагаемое изменение: " + amount);
+                return;
+            }
+
             if (newBalance > selectedGoal.getTarget()) {
                 System.out.println("Предупреждение! Новый баланс превышает целевую сумму!");
                 System.out.println("Текущая цель: " + selectedGoal.getTarget());
