@@ -4,17 +4,26 @@ public class Goal {
     private String name;
     private double balance;
     private double target;
-    private String category;
+    private Category category;
     boolean isCompleted;
     private LocalDate endDate;
 
-    public Goal(String name, double target, String category, LocalDate endDate) {
+    public Goal(String name, double target, Category category, LocalDate endDate) {
         this.name = name;
         this.target = target;
         this.category = category;
         this.endDate = endDate;
         this.balance = 0;
         this.isCompleted = false;
+        category.addGoal(this);
+    }
+
+    public double getTarget() {
+        return target;
+    }
+
+    public double getBalance() {
+        return balance;
     }
 
     public void updateBalance(double amount) {
@@ -46,7 +55,7 @@ public class Goal {
                 "\nЦелевая сумма: " + target +
                 "\nТекущий баланс: " + balance +
                 "\nПрогресс: " + String.format("%.2f%%", getProgressPercentage()) +
-                "\nКатегория: " + category +
+                "\nКатегория: " + category.getName() +
                 "\nСтатус: " + (isCompleted ? "Выполнена" : "Не выполнена") +
                 "\nДата завершения: " + endDate;
     }
