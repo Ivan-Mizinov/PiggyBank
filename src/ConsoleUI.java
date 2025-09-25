@@ -25,6 +25,9 @@ public class ConsoleUI {
             System.out.println("4. Обновить баланс цели");
             System.out.println("0. Сохранить и выйти");
 
+            piggyBank.checkAllGoalsProgress();
+            piggyBank.checkAndNotifyProgress();
+
             int choice = getIntInput("Выберите пункт меню: ");
 
             switch (choice) {
@@ -82,6 +85,9 @@ public class ConsoleUI {
 
             selectedGoal.setBalance(newBalance);
             System.out.println("Баланс успешно обновлен!");
+
+            piggyBank.checkAllGoalsProgress();
+            piggyBank.checkAndNotifyProgress();
         } else {
             System.out.println("Неверный выбор!");
         }
@@ -135,6 +141,7 @@ public class ConsoleUI {
         LocalDate endDate = getDateInput();
         new Goal(name, category, target, balance, endDate);
         System.out.println("Цель успешно создана!");
+        piggyBank.resetNotification();
     }
 
     private String getStringInput(String prompt) {

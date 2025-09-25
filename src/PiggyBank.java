@@ -4,6 +4,31 @@ import java.util.List;
 public class PiggyBank {
     private List<Category> categories = new ArrayList<>();
     private FileManager fileManager = new FileManager();
+    private static final double NOTIFICATION_THRESHOLD = 0.8;
+    private boolean isNotificationSent = false;
+
+    public void checkAndNotifyProgress() {
+        double progress = calculateOverallProgress();
+        double formattedProgress = Math.round(progress * 100.0) / 100.0;
+        if (progress >= NOTIFICATION_THRESHOLD * 100 && !isNotificationSent) {
+            System.out.println("\n🎉🎉🎉 Поздравляем! Вы достигли " + String.format("%.2f", formattedProgress) + "% от вашей цели! 🎉🎉🎉");
+            System.out.println("🎉🎉🎉 Осталось совсем немного до достижения всех целей! 🎉🎉🎉\n");
+            isNotificationSent = true;
+        }
+    }
+
+    public void resetNotification() {
+        double progress = calculateOverallProgress();
+        if (progress < NOTIFICATION_THRESHOLD * 100) {
+            isNotificationSent = false;
+        }
+    }
+
+    public void checkAllGoalsProgress() {
+        for (Category category : categories) {
+            category.checkAllGoalsProgress();
+        }
+    }
 
     public void loadData() {
         fileManager.init(this);

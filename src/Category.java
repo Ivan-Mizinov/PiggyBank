@@ -11,6 +11,12 @@ public class Category {
         this.description = description;
     }
 
+    public void checkAllGoalsProgress() {
+        for (Goal goal : goals) {
+            goal.checkAndNotifyProgress();
+        }
+    }
+
     public String getDescription() {
         return description;
     }

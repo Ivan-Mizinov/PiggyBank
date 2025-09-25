@@ -7,6 +7,7 @@ public class Goal {
     private Category category;
     boolean isCompleted;
     private LocalDate endDate;
+    private boolean notificationSent = false;
 
     public Goal(String name, Category category, double target, double balance, LocalDate endDate) {
         this.name = name;
@@ -20,8 +21,20 @@ public class Goal {
 
     public void setBalance(double balance) {
         this.balance = balance;
+        checkAndNotifyProgress();
     }
 
+    public void checkAndNotifyProgress() {
+        double progress = getProgressPercentage();
+        if (progress >= 80 && !notificationSent) {
+            System.out.println("\n🎉🎉🎉 Поздравляем! Цель '" + name + "' достигла 80% прогресса! 🎉🎉🎉\n");
+            notificationSent = true;
+        }
+    }
+
+    public void resetNotification() {
+        notificationSent = false;
+    }
     public String getName() {
         return name;
     }
